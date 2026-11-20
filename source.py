@@ -91,6 +91,8 @@ def ev(b):
                     if sk>0:e-=pen
                     else:e+=pen
                 break
+    # Mobility
+    e+=3*(len(gm(b,0,-1,1))-len(gm(b,0,-1,-1)))
     return e
 def atk(b,s,w):
     if w==1:
@@ -235,15 +237,7 @@ def uc(cas,f,t):
     if f==7 or t==7:c&=~4
     if f==0 or t==0:c&=~8
     return c
-TT={};TTM=200000
-kl=[None]*32
-hi=[[0]*64 for _ in range(64)]
-ns=0
-def pk(b,cas,ep,side):return(tuple(b),cas,ep,side)
-def ptt(key,d,a,bt,pl):
-    return(False,0,None)
-def stt(key,d,fl,sc,bm,pl):
-    pass
+kl=[None]*32;hi=[[0]*64 for _ in range(64)];ns=0
 def ml(b,cas,ep,side):
     ks=fk(b,side);op=-side;ms=gm(b,cas,ep,side);lg=[]
     for m in ms:
@@ -276,11 +270,7 @@ def sr(b,cas,ep,side,a,bt,d,pl):
     if a>=mb or bt<=ma:
         a=max(a,ma);bt=min(bt,mb)
         if a>=bt:return(a+bt)//2
-    key=pk(b,cas,ep,side)
-    hit,ts,tm=ptt(key,d,a,bt,pl)
-    if hit:return ts
-    if d==0:
-        v=qs(b,side,a,bt,pl);stt(key,0,0,v,None,pl);return v
+    if d==0:return qs(b,side,a,bt,pl)
     ks=fk(b,side);op=-side;ic=atk(b,ks,op)
     R=2
     if not ic and npm(b,side) and d>=R+1:
@@ -288,10 +278,9 @@ def sr(b,cas,ep,side,a,bt,d,pl):
         if v>=bt:return bt
     lg=ml(b,cas,ep,side)
     if not lg:
-        if ic:
-            sc=-MA+pl;stt(key,d,0,sc,None,pl);return sc
-        stt(key,d,0,0,None,pl);return 0
-    od=ordm(lg,b,tm,d);be=-MA;bm=od[0];fl=2;li=0
+        if ic:return-MA+pl
+        return 0
+    od=ordm(lg,b,tm,d);be=-MA;bm=od[0];li=0
     k1=kl[d][0] if kl[d] else None;k2=kl[d][1] if kl[d] else None
     for m in od:
         nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1]);rd=0
@@ -303,15 +292,12 @@ def sr(b,cas,ep,side,a,bt,d,pl):
         if v>be:be=v;bm=m
         if v>a:a=v
         if a>=bt:
-            fl=1
             if iq(m,b):
                 if kl[d] is None:kl[d]=[None,None]
                 if m!=kl[d][0]:kl[d][1]=kl[d][0];kl[d][0]=m
                 hi[m[0]][m[1]]+=d*d
             break
         li+=1
-    if fl==2 and bm:stt(key,d,0,be,bm,pl)
-    elif fl==1:stt(key,d,fl,be,bm,pl)
     return be
 def qs(b,side,a,bt,pl):
     global ns;ns+=1
