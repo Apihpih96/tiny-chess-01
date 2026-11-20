@@ -1,4 +1,4 @@
-"""tiny-chess-01 — engine with TT, killers, history, king safety, check ext, mate scoring."""
+"""tiny-chess-01 — LMR, aspiration windows, pawn structure."""
 import json,os,sys,urllib.error,urllib.request
 ENV=os.environ.get("MAKEFUN_ENV_URL")
 V=[0,100,320,330,500,900,20000]
@@ -56,6 +56,24 @@ def ev(b):
                             if b[r*8+nf]!=0 and b[r*8+nf]>0:bl=1;break
                     if bl:break
                 if not bl:e-=20+((7-s//8))*5
+    # Pawn structure: doubled/isolated
+    for f in range(8):
+        wc=bc=wi=bi=0
+        for r in range(8):
+            p=b[r*8+f]
+            if p==1:wc+=1
+            elif p==-1:bc+=1
+        if wc>1:e-=10*(wc-1)
+        if bc>1:e+=10*(bc-1)
+        for df in(-1,1):
+            nf=f+df
+            if 0<=nf<8:
+                for r in range(8):
+                    p=b[r*8+nf]
+                    if p==1:wi=1
+                    elif p==-1:bi=1
+        if wi==0 and wc>0:e-=10
+        if bi==0 and bc>0:e+=10
     # King safety
     for sk,op in[(6,-1),(-6,1)]:
         for s in range(64):
