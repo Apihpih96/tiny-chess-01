@@ -311,7 +311,7 @@ def bm(b,cas,ep,side,depth):
     global ns
     lg=ml(b,cas,ep,side)
     if not lg:return None
-    NB=40000;bm=lg[0];ba=-MA;d=1
+    NB=80000;bm=lg[0];ba=-MA;d=1
     while d<=depth:
         ns0=ns;tm=None
         od=ordm(lg,b,tm,d);ok=1
