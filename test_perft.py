@@ -1,12 +1,12 @@
 """Perft test for tiny-chess-01 engine."""
 import sys
 sys.path.insert(0, ".")
-from source import parse_fen, legal_moves, do_move, do_move_fast, upd_cas, atk, find_king
+from source import pf as parse_fen, ml as make_legal, dm as do_move_fast, uc as upd_cas, atk, fk as find_king
 
 def perft(b,cas,ep,side,d):
     """Count legal moves to depth d."""
     if d==0:return 1
-    ms=legal_moves(b,cas,ep,side)
+    ms=make_legal(b,cas,ep,side)
     if d==1:return len(ms)
     total=0
     for m in ms:
@@ -17,7 +17,7 @@ def perft(b,cas,ep,side,d):
 
 def perft_divide(b,cas,ep,side,d):
     """Perft with move breakdown."""
-    ms=legal_moves(b,cas,ep,side)
+    ms=make_legal(b,cas,ep,side)
     total=0
     for m in ms:
         nb,nep=do_move_fast(b,m,side,ep)
