@@ -91,8 +91,16 @@ def ev(b):
                     if sk>0:e-=pen
                     else:e+=pen
                 break
-    # Mobility
-    e+=3*(len(gm(b,0,-1,1))-len(gm(b,0,-1,-1)))
+    # Mobility (knights only — cheap)
+    wm=bm=0
+    for s in range(64):
+        if b[s]==2:
+            for t in NA[s]:
+                if b[t]==0 or b[t]<0:wm+=1
+        elif b[s]==-2:
+            for t in NA[s]:
+                if b[t]==0 or b[t]>0:bm+=1
+    e+=3*(wm-bm)
     return e
 def atk(b,s,w):
     if w==1:
