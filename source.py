@@ -280,7 +280,7 @@ def sr(b,cas,ep,side,a,bt,d,pl):
     if not lg:
         if ic:return-MA+pl
         return 0
-    od=ordm(lg,b,tm,d);be=-MA;bm=od[0];li=0
+    od=ordm(lg,b,None,d);be=-MA;bm=od[0];li=0
     k1=kl[d][0] if kl[d] else None;k2=kl[d][1] if kl[d] else None
     for m in od:
         nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1]);rd=0
