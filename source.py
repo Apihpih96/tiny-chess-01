@@ -328,16 +328,34 @@ def bm(b,cas,ep,side,depth):
     global ns
     lg=ml(b,cas,ep,side)
     if not lg:return None
-    NB=80000;bm=lg[0];ba=-MA;d=1
+    NB=80000;bm=lg[0];ba=-MA;d=1;ps=0
     while d<=depth:
         ns0=ns;tm=None
-        od=ordm(lg,b,tm,d);ok=1
-        for m in od:
-            nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1])
-            v=-sr(nb,nc,nep,-side,-MA,MA,d-1,1)
-            if v>ba:ba=v;bm=m
-            if ns-ns0>NB:ok=0;break
-        if not ok:break
+        if d>1 and ps!=0:
+            a2=ps-50;b2=ps+50
+            v2=-MA
+            for m in ordm(lg,b,tm,d):
+                nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1])
+                v=-sr(nb,nc,nep,-side,-b2,-a2,d-1,1)
+                if v>v2:v2=v;bm=m
+                if ns-ns0>NB:break
+            if v2<=a2 or v2>=b2:
+                ns0=ns
+                for m in ordm(lg,b,tm,d):
+                    nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1])
+                    v=-sr(nb,nc,nep,-side,-MA,MA,d-1,1)
+                    if v>v2:v2=v;bm=m
+                    if ns-ns0>NB:break
+            ba=v2;ps=v2
+        else:
+            od=ordm(lg,b,tm,d);ok=1
+            for m in od:
+                nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1])
+                v=-sr(nb,nc,nep,-side,-MA,MA,d-1,1)
+                if v>ba:ba=v;bm=m
+                if ns-ns0>NB:ok=0;break
+            ps=ba
+            if not ok:break
         d+=1
     return uc2(bm) if bm else None
 def uc2(m):
