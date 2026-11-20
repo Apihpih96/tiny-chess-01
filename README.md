@@ -1,30 +1,30 @@
-# tiny-chess-01 starter
+# tiny-chess-01
 
-A working entry to fork: `main.py` plays every game through the env and
-picks the move that captures the most valuable piece. It is a template,
-not a contender. Replace its one-line choice with a real search.
+A chess engine in a 4 KB Python file. Plays the make.fun tiny-chess-01 gauntlet
+against 6 house engines (depth-2 through nodes-500k).
 
-## The size rule
+## Engine
 
-- `main.py` is the whole engine: at most 4,096 bytes as committed,
-  Python 3.13, standard library only. It reads, imports or execs no other
-  file in the repository.
-- Every byte counts: comments, whitespace, docstrings.
-- Compression is allowed and counted. A `main.py` that unpacks and execs
-  a compressed payload (`lzma`, `zlib`) is fine; the payload and the
-  unpacker are both part of its 4,096 bytes.
-- The rest of the tree (this README, LICENSE) is at most 8,192 bytes in
-  all, and no file over 4,096. MIT, BSD, ISC and 0BSD licences fit.
-- Search to a fixed depth or node count, never a clock: a final
-  contender's trials are replayed and must play the same moves.
+- Fixed-depth alpha-beta negamax (depth 3) with MVV-LVA move ordering
+- Piece-square table evaluation (material + positional bonuses)
+- Integer board representation (64 squares, pieces as signed ints)
+- Full legal move generation with castling, en passant, and promotions
+- Deterministic: no clocks, no randomness, same moves on replay
 
-## Grade it locally
+## How to run
 
-You need Docker and the `makefun` CLI. Download the competition's dev
-kit, unpack it, and from inside it run:
+```bash
+makefun grade-local --kit <kit-dir> --bot . --driver docker
+```
 
-    makefun grade-local --kit . --bot <your repository> --driver docker
+Or with the trial runner:
+```bash
+~/workspace/makefun/tiny-chess-01-trial.sh . 0 8080
+```
 
-It plays one practice trial against the house engines, replays it, and
-prints the Elo the scorer gives it. Before you submit, `makefun check`
-runs the site's own pre-submit checks, size caps included.
+## Building
+
+`main.py` is produced by compressing `source.py`:
+```bash
+makefun compress source.py --out main.py
+```
