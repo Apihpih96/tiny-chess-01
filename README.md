@@ -1,30 +1,29 @@
 # tiny-chess-01
 
-A chess engine in a 4 KB Python file. Plays the make.fun tiny-chess-01 gauntlet
-against 6 house engines (depth-2 through nodes-500k).
+[![make.fun](https://make.fun/badge/tiny-chess-01.svg)](https://make.fun/bounty/tiny-chess-01)
+[![rank](https://make.fun/badge/tiny-chess-01/Apihpih96/tiny-chess-01/rank.svg)](https://make.fun/bounty/tiny-chess-01)
+[![reward](https://make.fun/badge/tiny-chess-01/Apihpih96/tiny-chess-01/reward.svg)](https://make.fun/bounty/tiny-chess-01)
+
+A chess engine in 4 KB of Python, built for the [tiny-chess-01 bounty](https://make.fun/bounty/tiny-chess-01) on make.fun. It plays the gauntlet of 8 house engines (depth-2 through nodes-500k) through the make.fun env.
 
 ## Engine
 
-- Fixed-depth alpha-beta negamax (depth 3) with MVV-LVA move ordering
-- Piece-square table evaluation (material + positional bonuses)
-- Integer board representation (64 squares, pieces as signed ints)
-- Full legal move generation with castling, en passant, and promotions
+- Iterative deepening alpha-beta negamax, fixed 80,000-node budget
+- Quiescence search (captures, promotions, check extensions)
+- Null-move pruning (R=2), late move reductions, aspiration windows
+- MVV-LVA + killer/history move ordering
+- Piece-square table evaluation: material, bishop pair, passed pawns, pawn structure (doubled/isolated), king safety
+- Full legal move generation: castling, en passant, promotions
 - Deterministic: no clocks, no randomness, same moves on replay
+- Practice Elo 876 (0W 2D 4L on each of the 3 practice trials)
 
-## How to run
+## Run
+
+The env runs it as `python3 -P -s main.py` (Python 3.13, stdlib only).
+`main.py` is produced by compressing the readable `source.py` with the kit:
 
 ```bash
-makefun grade-local --kit <kit-dir> --bot . --driver docker
+node <kit>/cli/makefun.mjs compress source.py --out main.py
 ```
 
-Or with the trial runner:
-```bash
-~/workspace/makefun/tiny-chess-01-trial.sh . 0 8080
-```
-
-## Building
-
-`main.py` is produced by compressing `source.py`:
-```bash
-makefun compress source.py --out main.py
-```
+Referral code: `qv9aepwe`
