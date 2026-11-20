@@ -87,20 +87,14 @@ def ev(b):
                         pr2=kr+(2 if sk==6 else-2)
                         if 0<=pr2<8 and b[pr2*8+nf]==op:ps+=1
                 if ps<4:
-                    pen=(4-ps)*15
+                    pen=(4-ps)*25
+                    # Open file penalty
+                    for pr in(range(kr+1,8) if sk==6 else range(kr)):
+                        if b[pr*8+kf]==op:break
+                    else:pen+=10
                     if sk>0:e-=pen
                     else:e+=pen
                 break
-    # Mobility (knights only — cheap)
-    wm=bm=0
-    for s in range(64):
-        if b[s]==2:
-            for t in NA[s]:
-                if b[t]==0 or b[t]<0:wm+=1
-        elif b[s]==-2:
-            for t in NA[s]:
-                if b[t]==0 or b[t]>0:bm+=1
-    e+=3*(wm-bm)
     return e
 def atk(b,s,w):
     if w==1:
