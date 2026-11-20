@@ -246,6 +246,11 @@ def ordm(lg,b,tm,d):
     sc.sort(key=lambda x:x[0],reverse=1)
     return[m for _,m in sc]
 def iq(m,b):return b[m[1]]==0 and m[2]==0
+def npm(b,side):
+    for s in range(64):
+        p=b[s]
+        if p!=0 and(p>0)==(side==1)and abs(p)>1 and p!=6*side:return True
+    return False
 def sr(b,cas,ep,side,a,bt,d,pl):
     global ns;ns+=1
     ma=max(-MA+pl,-MA+1);mb=min(MA-pl,MA-1)
@@ -257,9 +262,14 @@ def sr(b,cas,ep,side,a,bt,d,pl):
     if hit:return ts
     if d==0:
         v=qs(b,side,a,bt,pl);stt(key,0,0,v,None,pl);return v
-    ks=fk(b,side);op=-side;lg=ml(b,cas,ep,side)
+    ks=fk(b,side);op=-side;ic=atk(b,ks,op)
+    R=2
+    if not ic and npm(b,side) and d>=R+1:
+        v=-sr(b,cas,-1,op,-bt,-bt+1,d-R-1,pl+1)
+        if v>=bt:return bt
+    lg=ml(b,cas,ep,side)
     if not lg:
-        if atk(b,ks,op):
+        if ic:
             sc=-MA+pl;stt(key,d,0,sc,None,pl);return sc
         stt(key,d,0,0,None,pl);return 0
     od=ordm(lg,b,tm,d);be=-MA;bm=od[0];fl=2
