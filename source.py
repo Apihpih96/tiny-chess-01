@@ -120,6 +120,7 @@ def atk(b,s,w):
         for t in KA[s]:
             if b[t]==-6:return 1
     return 0
+def ck(b,s,op):return atk(b,s,op)
 def fk(b,side):
     t=6 if side==1 else-6
     for s in range(64):
@@ -272,10 +273,15 @@ def sr(b,cas,ep,side,a,bt,d,pl):
         if ic:
             sc=-MA+pl;stt(key,d,0,sc,None,pl);return sc
         stt(key,d,0,0,None,pl);return 0
-    od=ordm(lg,b,tm,d);be=-MA;bm=od[0];fl=2
+    od=ordm(lg,b,tm,d);be=-MA;bm=od[0];fl=2;li=0
+    k1=kl[d][0] if kl[d] else None;k2=kl[d][1] if kl[d] else None
     for m in od:
-        nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1])
-        v=-sr(nb,nc,nep,op,-bt,-a,d-1,pl+1)
+        nb,nep=dm(b,m,side,ep);nc=uc(cas,m[0],m[1]);rd=0
+        if d>=3 and li>=3 and iq(m,b) and m!=k1 and m!=k2 and not ck(nb,fk(nb,op),side):
+            rd=1
+        v=-sr(nb,nc,nep,op,-bt,-a,d-1-rd,pl+1)
+        if rd and v>a:
+            v=-sr(nb,nc,nep,op,-bt,-a,d-1,pl+1)
         if v>be:be=v;bm=m
         if v>a:a=v
         if a>=bt:
@@ -285,6 +291,7 @@ def sr(b,cas,ep,side,a,bt,d,pl):
                 if m!=kl[d][0]:kl[d][1]=kl[d][0];kl[d][0]=m
                 hi[m[0]][m[1]]+=d*d
             break
+        li+=1
     if fl==2 and bm:stt(key,d,0,be,bm,pl)
     elif fl==1:stt(key,d,fl,be,bm,pl)
     return be
