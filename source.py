@@ -27,13 +27,46 @@ KA=[[s+d for d in KD if 0<=s+d<64 and abs((s+d)%8-s%8)<=1 and abs((s+d)//8-s//8)
 def mirror(s):return((7-s//8)*8+s%8)
 
 def ev(b):
-    e=0
+    e=0;wb=0;bb=0
     for s in range(64):
         p=b[s]
         if p==0:continue
         a=abs(p)
         v=V[a]+PS[a][s if p>0 else mirror(s)]
+        if a==3:
+            if p>0:wb+=1
+            else:bb+=1
         e+=v if p>0 else-v
+    # Bishop pair bonus
+    if wb>=2:e+=50
+    if bb>=2:e-=50
+    # Passed pawn bonus
+    for s in range(64):
+        if b[s]==1:
+            f=s%8;blocked=0
+            for r in range(0,s//8):
+                if b[r*8+f]!=0 and b[r*8+f]<0:blocked=1;break
+            if not blocked:
+                # Check adjacent files too
+                for df in(-1,1):
+                    nf=f+df
+                    if 0<=nf<8:
+                        for r in range(0,s//8):
+                            if b[r*8+nf]!=0 and b[r*8+nf]<0:blocked=1;break
+                    if blocked:break
+                if not blocked:e+=20+(s//8)*5
+        elif b[s]==-1:
+            f=s%8;blocked=0
+            for r in range(s//8+1,8):
+                if b[r*8+f]!=0 and b[r*8+f]>0:blocked=1;break
+            if not blocked:
+                for df in(-1,1):
+                    nf=f+df
+                    if 0<=nf<8:
+                        for r in range(s//8+1,8):
+                            if b[r*8+nf]!=0 and b[r*8+nf]>0:blocked=1;break
+                    if blocked:break
+                if not blocked:e-=20+((7-s//8))*5
     return e
 
 def atk(b,s,w):
@@ -299,7 +332,7 @@ def best_move(b,cas,ep,side,depth):
         if not atk(nb,k,opp):leg.append(m)
     if not leg:return None
     # Iterative deepening with node budget
-    NODE_BUDGET=15000
+    NODE_BUDGET=40000
     bm=leg[0];ba=-99999
     d=1
     while d<=depth:
